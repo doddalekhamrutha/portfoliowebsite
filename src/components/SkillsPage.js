@@ -1,102 +1,155 @@
-import React from 'react';
-import styled from 'styled-components';
+import React, { useState } from "react";
+import styled from "styled-components";
 
-// Skill data with respective black icons
+// ✅ Skill data (icons included)
 const skillsData = [
   {
-    name: 'C',
-    icon: 'https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/i/a55359db-8be9-4150-8c22-c4f54b6dfc96/df1d241-485b9236-f0ac-4804-a77d-6495d852801d.png',
+    name: "C",
+    level: 85,
+    icon: "https://img.icons8.com/color/96/000000/c-programming.png",
   },
   {
-    name: 'HTML',
-    icon: 'https://cdn-icons-png.flaticon.com/512/4553/4553754.png',
+    name: "Java",
+    level: 80,
+    icon: "https://img.icons8.com/color/96/000000/java-coffee-cup-logo.png",
   },
   {
-    name: 'CSS',
-    icon: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRlSCoRep6oYm2r44nHY7ibl_VKzWWpsWCaAw&s',
+    name: "React",
+    level: 75,
+    icon: "https://img.icons8.com/color/96/000000/react-native.png",
   },
   {
-    name: 'Java',
-    icon: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRtkPButmVDywbyOhbRKFX5VK7NQ8pbu_0Qqw&s',
+    name: "MySQL",
+    level: 70,
+    icon: "https://img.icons8.com/color/96/000000/mysql-logo.png",
+  },
+  {
+    name: "HTML",
+    level: 90,
+    icon: "https://img.icons8.com/color/96/000000/html-5.png",
+  },
+  {
+    name: "CSS",
+    level: 85,
+    icon: "https://img.icons8.com/color/96/000000/css3.png",
+  },
+  {
+    name: "Node.js",
+    level: 75,
+    icon: "https://img.icons8.com/color/96/000000/nodejs.png",
+  },
+  {
+    name: "Spring Boot",
+    level: 70,
+    icon: "https://img.icons8.com/color/96/000000/spring-logo.png",
+  },
+  {
+    name: "Git",
+    level: 80,
+    icon: "https://img.icons8.com/color/96/000000/git.png",
   },
 ];
 
-const PageContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  min-height: 100vh; /* Ensure full page height */
+// ✅ Styled Components
+const PageContainer = styled.section`
+  padding: 4rem 2rem;
+  background-color: #f9fafb;
+  min-height: 100vh;
 `;
 
-const ContentWrapper = styled.div`
-  flex: 1; /* Allow this to grow and push the footer down */
-  background-color: #fff; /* Pure white background */
+const Title = styled.h1`
+  text-align: center;
+  font-size: 2.5rem;
+  font-weight: bold;
+  margin-bottom: 3rem;
+  color: #1f2937;
 `;
 
-const SkillsWrapper = styled.section`
-  display: flex;
-  flex-wrap: wrap; /* Allow wrapping to next row */
-  justify-content: space-between; /* Add space between cards */
-  padding: 2rem;
-  background-color: #fff; /* Pure white background */
+const SkillsGrid = styled.div`
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 2rem;
 `;
 
 const SkillCard = styled.div`
-  width: 28%; /* Two cards per row */
-  padding: 3rem;
-  background-color: #fff; /* Pure white */
-  border: 1px solid #000; /* Black border */
-  border-radius: 8px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-  margin-bottom: 3rem;
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 2rem 1.5rem;
   text-align: center;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  cursor: pointer;
+
+  &:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+  }
 `;
 
 const SkillIcon = styled.img`
-  width: 50px;
-  height: 50px;
+  width: 60px;
+  height: 60px;
+  object-fit: contain;
   margin-bottom: 1rem;
 `;
 
-const SkillName = styled.h4`
+const SkillName = styled.h3`
   font-size: 1.2rem;
-  color: #333;
-  margin-bottom: 1rem;
+  font-weight: 600;
+  margin-bottom: 0.8rem;
+  color: #111827;
 `;
 
-const Title = styled.h2`
-  font-size: 2.5rem; /* Increased font size */
-  color: black;
-  text-align: center; /* Center the title */
-  margin-bottom: 1rem;
+const ProgressBarContainer = styled.div`
+  width: 100%;
+  background-color: #e5e7eb;
+  border-radius: 6px;
+  overflow: hidden;
+  height: 8px;
 `;
 
-const Footer = styled.footer`
-  text-align: center;
-  padding: 1rem;
-  background-color: #333;
-  color: white;
+const ProgressBar = styled.div`
+  height: 100%;
+  background: linear-gradient(90deg, #4f46e5, #3b82f6);
+  width: ${(props) => props.level}%;
+  transition: width 0.5s ease-in-out;
 `;
 
-const SkillsPage = () => {
+// ✅ Main Component
+const Skills = () => {
+  const [hoveredSkill, setHoveredSkill] = useState(null);
+
   return (
     <PageContainer>
-      {/* Content Section */}
-      <ContentWrapper>
-        {/* Title Section */}
-        <Title><br></br>My Skills</Title>
-
-        {/* Skills Cards */}
-        <SkillsWrapper>
-          {skillsData.map((skill, index) => (
-            <SkillCard key={index}>
-              <SkillIcon src={skill.icon} alt={`${skill.name} icon`} />
-              <SkillName>{skill.name}</SkillName>
-            </SkillCard>
-          ))}
-        </SkillsWrapper>
-      </ContentWrapper>
+      <Title>My Skills</Title>
+      <SkillsGrid>
+        {skillsData.map((skill, index) => (
+          <SkillCard
+            key={index}
+            onMouseEnter={() => setHoveredSkill(skill.name)}
+            onMouseLeave={() => setHoveredSkill(null)}
+          >
+            <SkillIcon src={skill.icon} alt={skill.name} />
+            <SkillName>{skill.name}</SkillName>
+            <ProgressBarContainer>
+              <ProgressBar level={skill.level} />
+            </ProgressBarContainer>
+            {hoveredSkill === skill.name && (
+              <p
+                style={{
+                  marginTop: "0.5rem",
+                  fontSize: "0.9rem",
+                  color: "#6b7280",
+                }}
+              >
+                Proficiency: {skill.level}%
+              </p>
+            )}
+          </SkillCard>
+        ))}
+      </SkillsGrid>
     </PageContainer>
   );
 };
 
-export default SkillsPage;
+export default Skills;
